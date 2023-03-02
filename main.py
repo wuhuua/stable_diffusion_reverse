@@ -1,8 +1,3 @@
-'''use it only when in kaggle
-! pip install ftfy regex tqdm
-! pip install git+https://github.com/openai/CLIP.git
-'''
-
 import torch
 import clip
 from tqdm.notebook import tqdm
@@ -10,6 +5,7 @@ from torch.utils.data import DataLoader, Dataset
 from zeroshot.zeroShot import zeroShot
 from blip.zeroshot import generateContext
 from processor.dataPre import imgPre
+from clipinterrogator.Interrogate import clip_interrogator
 
 def test_models():
     print("Torch version:", torch.__version__)
@@ -20,11 +16,13 @@ def execute(model_path,data_path,model):
     if(model=="zeroshot"):
         zeroShot(model_path,data_path)
     if(model=="blip2"):
-        generateContext(model_path,data_path)
+        return generateContext(model_path,data_path)
     if(model=="test_data"):
         imgPre(data_path)
+    if(model=="clip-interrogator"):
+        return clip_interrogator(model_path,data_path)
 
 if __name__=='__main__':
     # execute("./models/ViT-B-32.pt","./static","zeroshot")
-    execute("./models/blipModels/simple/","./static","blip2")
-    # execute("","./static","test_data")
+    # execute("./models/blipModels/simple/","./static","blip2")
+    execute("","./static","test_data")
