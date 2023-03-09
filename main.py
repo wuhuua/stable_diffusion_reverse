@@ -1,33 +1,53 @@
 import torch
 import clip
-from tqdm.notebook import tqdm
-from torch.utils.data import DataLoader, Dataset
 from clip_model.zeroShot import zeroShot
 from blip.zeroshot import generateContext
 from blip.zeroshotembedding import generateEmbedding
 from processor.dataPre import imgPre
-# from clipinterrogator.Interrogate import clip_interrogator
+from clipinterrogator.Interrogate import clipInterrogator,ci_config
+from clipinterrogator.Interrogate import load_label
 
 def test_models():
     print("Torch version:", torch.__version__)
     print("clip models:",clip.available_models())
 
-def execute(model_path,data_path,model,extend_path=None,model_extend_path=None,batch_size=None):
+'''
+execute工具是神经网络推理的主工具,通过传入参数来调控模型和数据的具体路径,
+也可以在extend_path中传入配置文件的路径来自定义
+'''
+
+def execute(
+        model_path=None,
+        data_path=None,
+        model=None,
+        extend_path=None,
+        model_extend_path=None,
+        batch_size=16,
+        max_flavors=3,
+        num_beams=1
+        ):
+    
     test_models()
-    if(model=="zeroshot"):
+    if(model=="clip_model"):
         zeroShot(model_path,data_path)
     if(model=="blip2"):
         return generateContext(model_path,data_path,batch_size)
     if(model=="test_data"):
         imgPre(data_path)
+    if(model=="test_dict"):
+        return load_label("./dataset/dicts/",'mediums.txt')
     if(model=="blip2-embedding"):
         return generateEmbedding(model_path,data_path,extend_path,model_extend_path,batch_size)
-'''
     if(model=="clip-interrogator"):
-        return clip_interrogator(model_path,data_path)
-'''
+        ci=clipInterrogator(ci_config(extend_path))
+        return ci.getCaption(data_path,batch_size,max_flavors,num_beams)
+    if(model=="clip-interrogator-embedding"):
+        ci=clipInterrogator(ci_config(extend_path))
+        return ci.getEmbeddings(data_path,batch_size,max_flavors,num_beams)
+        
 
 if __name__=='__main__':
-    # execute("./models/ViT-B-32.pt","./static","zeroshot")
+    # execute("./models/ViT-B-32.pt","./static","clip_model")
+    print(execute(model="test_dict"))
     # execute("./models/blipModels/simple/","./static","blip2")
-    execute("","./static","test_data")
+    # execute("","./static","test_data")

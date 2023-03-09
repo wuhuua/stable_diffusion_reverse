@@ -1,3 +1,3 @@
 # CLIP version
 
-这是基于CLIP预训练模型
+这是使用CLIP标签化的图片生成文本ai，使用BLIP2进行Caption的预测，并且使用CLIP进行标签化

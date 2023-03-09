@@ -1,0 +1,11 @@
+{
+    "blip_model":"blip227b",
+    "blip_path":"./models/stable-diffusion-image-to-prompts",
+    "clip_model":"ViT-B-32",
+    "clip_path":"./models/ViT-B-32.pt",
+    "dicts":"./dataset/dicts/",
+    "chunk_size":2048,
+    "embedding_model":"all-MiniLM-L6-v2",
+    "embedding_dir":"./models/sentence-transformers-222/sentence-transformers",
+    "embedding_path":"./models/sentence-transformers-222/sentence-transformers/all-MiniLM-L6-v2"
+}
