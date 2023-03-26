@@ -74,6 +74,16 @@ class clipInterrogator:
         self.movements = LabelTable(load_label(self.dicts, 'movements.txt'), "movements", self.clip_model, config)
         print("movements loading OK")
 
+    def delModel(self):
+        del self.blip_processor
+        del self.blip_model
+        del self.clip_model
+        del self.mediums
+        del self.flavors
+        del self.movements
+        print(gc.collect())
+        torch.cuda.empty_cache()
+
     # 图片特征提取
     def image_to_features(self, image: Image) -> torch.Tensor:
         images = self.clip_preprocess(image).unsqueeze(0).to(self.device)
@@ -107,9 +117,7 @@ class clipInterrogator:
                 medium=self.mediums.rank(image_feature, 1)[0]
                 movement = self.movements.rank(image_feature, 1)[0]
                 prompts.append(f"{generated_text[i][:-1]}, {medium}, {movement}, {flaves}")
-
-        del self.blip_processor
-        del self.blip_model
+        self.delModel()
         print(str(len(prompts))+"texts are generated")
         print("collecting rubbish:")
         print(gc.collect())
@@ -150,8 +158,8 @@ class clipInterrogator:
                 prompts.append(f"{generated_text[i][:-1]}, {medium}, {flaves}")
             embeddings = st_model.encode(prompts).flatten()
             submissions.extend(embeddings)
-        del self.blip_processor
-        del self.blip_model
+        self.delModel()
+        del st_model
         print(str(len(submissions))+"texts are generated")
         print("collecting rubbish:")
         print(gc.collect())
